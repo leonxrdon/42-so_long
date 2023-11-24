@@ -36,21 +36,19 @@ int	main(void)
 
 	void	*mlx;
 	void	*mlx_win;
-	t_data	img;
+	void	*img;
 	char	*relative_path = "./mario.xpm";
 	int		img_width;
 	int		img_height;
 
 
 	mlx = mlx_init();
+	img_height = 500;
+	img_width =  500;
+	img = mlx_xpm_file_to_image(mlx, relative_path, &img_width, &img_height);
 	mlx_win = mlx_new_window(mlx, 500, 500, "so_long");
 	// Crear una nueva imagen
-	img.img = mlx_xpm_file_to_image(mlx, relative_path, &img_width, &img_height);
-	// Get data Address
-	img.addr = mlx_get_data_addr(img.img, &img.bits_x_pixel, &img.line_length, &img.endian);
-	// Insertar pixeles
-	my_mlx_pixel_put(&img, 225, 225, 0x00FF0000);
-	mlx_put_image_to_window(mlx, mlx_win, img.img, 0, 0);
+
 
 	mlx_loop(mlx);
 
