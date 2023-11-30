@@ -9,28 +9,18 @@
 /*   Updated: 2023/07/12 18:18:27 by lnarvaez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include <mlx.h>
-#include <stdio.h>
 
-typedef struct {
-    char map[7][7];
-} Map;
-
-typedef struct {
-    void *img;
-    int width;
-    int height;
-} Texture;
+#include "so_long.h"
 
 void load_map(Map *map) {
     // Definir manualmente el mapa o leerlo desde un archivo de texto
     char temp_map[7][7] = {
         "1111111",
-        "1P0010E",
-        "1C00101",
-        "1000101",
-        "10C0101",
-        "1000001",
+        "1C0000E",
+        "1P11101",
+        "1100001",
+        "11C1101",
+        "1100001",
         "1111111"
     };
 
@@ -41,7 +31,8 @@ void load_map(Map *map) {
     }
 }
 
-void mlx_rectangle(void *mlx, void *win, int x, int y, int width, int height, int color) {
+void mlx_rectangle(void *mlx, void *win, int x, int y, int width, int height, int color)
+{
     int i = 0;
     while (i < height) {
         int j = 0;
@@ -53,8 +44,9 @@ void mlx_rectangle(void *mlx, void *win, int x, int y, int width, int height, in
     }
 }
 
-void draw_map(void *mlx, void *win, Map *map, Texture *wall_texture, Texture *user_texture, Texture *coin, Texture *salida){
-    int block_size = 50; // Tamaño de cada bloque en píxeles
+void draw_map(void *mlx, void *win, Map *map, Texture *wall_texture, Texture *user_texture, Texture *coin, Texture *salida)
+{
+    int block_size = 50;
     for (int i = 0; i < 7; i++) {
         for (int j = 0; j < 7; j++) {
             int x = j * block_size;
@@ -75,7 +67,7 @@ void draw_map(void *mlx, void *win, Map *map, Texture *wall_texture, Texture *us
     }
 }
 
-Texture load_texture(void *mlx, char *file_path) {
+Texture load_texture(void *mlx, char *file_path){
     Texture texture;
 
     // Cargar la textura desde el archivo .xpm
