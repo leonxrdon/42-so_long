@@ -22,19 +22,19 @@ typedef struct	s_vars {
 }				t_vars;
 
 typedef struct {
-    char map[7][7];
+	char map[7][7];
 } Map;
 
 typedef struct {
-    void *img;
-    int width;
-    int height;
+	void *img;
+	int width;
+	int height;
 } Texture;
 
-
-void    load_map(Map *map);
-void    mlx_rectangle(void *mlx, void *win, int x, int y, int width, int height, int color);
-void    draw_map(void *mlx, void *win, Map *map, Texture *wall_texture, Texture *user_texture, Texture *coin, Texture *salida);
-Texture load_texture(void *mlx, char *file_path);
+int	move(int keycode, t_vars *vars);
+void	load_map(Map *map);
+void	mlx_rectangle(void *mlx, void *win, int x, int y, int width, int height, int color);
+void	draw_map(void *mlx, void *win, Map *map, Texture *wall_texture, Texture *user_texture, Texture *coin, Texture *salida);
+Texture	load_texture(void *mlx, char *file_path);
 
 #endif

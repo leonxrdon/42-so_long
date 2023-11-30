@@ -15,7 +15,7 @@ CC	= gcc
 CCFLAGS	= -Wextra -Werror -Wall
 
 NAME = so_long
-SRC = main.c
+SRC = main.c move.c
 
 OBJ = $(SRC:.c=.o)
 
@@ -30,9 +30,11 @@ all: $(NAME)
 	$(CC) $(CCFLAGS) -Imlx -c $< -o $@
 
 clean:
-	$(RM) $(NAME)
+	$(RM) $(OBJ)
 
 fclean: clean
+	$(RM) $(NAME)
+
 
 re: fclean all
 
