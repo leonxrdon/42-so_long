@@ -12,11 +12,8 @@
 #include <mlx.h>
 #include <stdio.h>
 
-#define MAP_WIDTH 7
-#define MAP_HEIGHT 7
-
 typedef struct {
-    char map[MAP_HEIGHT][MAP_WIDTH];
+    char map[7][7];
 } Map;
 
 typedef struct {
@@ -27,7 +24,7 @@ typedef struct {
 
 void load_map(Map *map) {
     // Definir manualmente el mapa o leerlo desde un archivo de texto
-    char temp_map[MAP_HEIGHT][MAP_WIDTH] = {
+    char temp_map[7][7] = {
         "1111111",
         "1P0010E",
         "1C00101",
@@ -37,8 +34,8 @@ void load_map(Map *map) {
         "1111111"
     };
 
-    for (int i = 0; i < MAP_HEIGHT; i++) {
-        for (int j = 0; j < MAP_WIDTH; j++) {
+    for (int i = 0; i < 7; i++) {
+        for (int j = 0; j < 7; j++) {
             map->map[i][j] = temp_map[i][j];
         }
     }
@@ -56,27 +53,24 @@ void mlx_rectangle(void *mlx, void *win, int x, int y, int width, int height, in
     }
 }
 
-void draw_map(void *mlx, void *win, Map *map, Texture *texture) {
-    int block_size = 30; // Tamaño de cada bloque en píxeles
-    for (int i = 0; i < MAP_HEIGHT; i++) {
-        for (int j = 0; j < MAP_WIDTH; j++) {
+void draw_map(void *mlx, void *win, Map *map, Texture *wall_texture, Texture *user_texture, Texture *coin, Texture *salida){
+    int block_size = 50; // Tamaño de cada bloque en píxeles
+    for (int i = 0; i < 7; i++) {
+        for (int j = 0; j < 7; j++) {
             int x = j * block_size;
             int y = i * block_size;
 
             if (map->map[i][j] == '1') {
-                // Dibujar pared con textura
-                mlx_put_image_to_window(mlx, win, texture->img, x, y);
+                mlx_put_image_to_window(mlx, win, wall_texture->img, x, y);
             } else if (map->map[i][j] == 'P') {
-                // Dibujar posición inicial con textura
-                mlx_put_image_to_window(mlx, win, texture->img, x, y);
+                mlx_put_image_to_window(mlx, win, user_texture->img, x, y);
             } else if (map->map[i][j] == 'C') {
-                // Dibujar coleccionable con textura
-                mlx_put_image_to_window(mlx, win, texture->img, x, y);
+                mlx_put_image_to_window(mlx, win, coin->img, x, y);
             } else if (map->map[i][j] == 'E') {
-                // Dibujar salida con textura
-                mlx_put_image_to_window(mlx, win, texture->img, x, y);
+                mlx_put_image_to_window(mlx, win, salida->img, x, y);
+            } else {
+                mlx_rectangle(mlx, win, x, y, block_size, block_size, 0x000000);  
             }
-            // No dibujar nada para espacios vacíos ('0')
         }
     }
 }
@@ -100,14 +94,19 @@ int main(void) {
     void *mlx_win;
     Map game_map;
 	Texture	wall_texture;
+    Texture user_texture;
+    Texture coin;
+    Texture salida;
 
     mlx = mlx_init();
-    mlx_win = mlx_new_window(mlx, MAP_WIDTH * 30, MAP_HEIGHT * 30, "so long");
+    mlx_win = mlx_new_window(mlx, 7 * 50, 7 * 50, "so long");
 
     load_map(&game_map);
-    wall_texture = load_texture(mlx, "block.xpm");
-
-    draw_map(mlx, mlx_win, &game_map, &wall_texture);
+    wall_texture = load_texture(mlx, "texturas/bloque.xpm");
+    user_texture = load_texture(mlx, "texturas/mario.xpm");
+    coin = load_texture(mlx, "texturas/coin.xpm"); 
+    salida = load_texture(mlx, "texturas/salida.xpm");
+    draw_map(mlx, mlx_win, &game_map, &wall_texture, &user_texture, &coin, &salida);
 
 
     mlx_loop(mlx);
