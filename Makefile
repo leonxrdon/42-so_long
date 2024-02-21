@@ -15,13 +15,14 @@ CC	= gcc
 CCFLAGS	= -Wextra -Werror -Wall
 
 NAME = so_long
-SRC = main.c move.c
+SRC = main.c move.c gnl/get_next_line.c gnl/get_next_line_utils.c \
+	libft/ft_split.c\
 
 OBJ = $(SRC:.c=.o)
 
+INCLUDE = gnl/get_next_line.h libft/libft.h so_long.h
 
-
-$(NAME): $(OBJ)
+$(NAME): $(OBJ) $(INCLUDE)
 	$(CC) $(OBJ) -Lmlx -lmlx -framework OpenGL -framework AppKit -o $(NAME)
 
 all: $(NAME)
@@ -34,7 +35,6 @@ clean:
 
 fclean: clean
 	$(RM) $(NAME)
-
 
 re: fclean all
 
