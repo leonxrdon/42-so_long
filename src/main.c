@@ -10,28 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "so_long.h"
-
-void load_map(Map *map) {
-    //cargar el mapa con el arreglo que recibe como parametro, cargar el mapa en el arreglo
-	map->map = malloc(sizeof(char *) * map->rows);
-	if (!map->map)
-	{
-		printf("Error al cargar el mapa\n");
-		exit(1);
-	}
-	int i = 0;
-	while (i < map->rows)
-	{
-		map->map[i] = malloc(sizeof(char) * map->cols);
-		if (!map->map[i])
-		{
-			printf("Error al cargar el mapa\n");
-			exit(1);
-		}
-		i++;
-	}
-}
+#include "../include/so_long.h"
 
 void mlx_rectangle(void *mlx, void *win, int x, int y, int width, int height, int color)
 {
@@ -46,39 +25,39 @@ void mlx_rectangle(void *mlx, void *win, int x, int y, int width, int height, in
 	}
 }
 
-void draw_map(void *mlx, void *win, Map *map, Texture *wall_texture, Texture *user_texture, Texture *coin, Texture *salida)
-{
-	int block_size = 50;
-	for (int i = 0; i < 7; i++) {
-		for (int j = 0; j < 7; j++) {
-			int x = j * block_size;
-			int y = i * block_size;
+// void draw_map(void *mlx, void *win, Map *map, Texture *wall_texture, Texture *user_texture, Texture *coin, Texture *salida)
+// {
+// 	int block_size = 50;
+// 	for (int i = 0; i < 7; i++) {
+// 		for (int j = 0; j < 7; j++) {
+// 			int x = j * block_size;
+// 			int y = i * block_size;
 
-			if (map->map[i][j] == '1') {
-				mlx_put_image_to_window(mlx, win, wall_texture->img, x, y);
-			} else if (map->map[i][j] == 'P') {
-				mlx_put_image_to_window(mlx, win, user_texture->img, x, y);
-			} else if (map->map[i][j] == 'C') {
-				mlx_put_image_to_window(mlx, win, coin->img, x, y);
-			} else if (map->map[i][j] == 'E') {
-				mlx_put_image_to_window(mlx, win, salida->img, x, y);
-			} else {
-				mlx_rectangle(mlx, win, x, y, block_size, block_size, 0x000000);
-			}
-		}
-	}
-}
+// 			if (map->map[i][j] == '1') {
+// 				mlx_put_image_to_window(mlx, win, wall_texture->img, x, y);
+// 			} else if (map->map[i][j] == 'P') {
+// 				mlx_put_image_to_window(mlx, win, user_texture->img, x, y);
+// 			} else if (map->map[i][j] == 'C') {
+// 				mlx_put_image_to_window(mlx, win, coin->img, x, y);
+// 			} else if (map->map[i][j] == 'E') {
+// 				mlx_put_image_to_window(mlx, win, salida->img, x, y);
+// 			} else {
+// 				mlx_rectangle(mlx, win, x, y, block_size, block_size, 0x000000);
+// 			}
+// 		}
+// 	}
+// }
 
-Texture load_texture(void *mlx, char *file_path){
-	Texture texture;
-	texture.img = mlx_xpm_file_to_image(mlx, file_path, &texture.width, &texture.height);
+// Texture load_texture(void *mlx, char *file_path){
+// 	Texture texture;
+// 	texture.img = mlx_xpm_file_to_image(mlx, file_path, &texture.width, &texture.height);
 
-	if (!texture.img) {
-        printf("Error al cargar la textura desde %s\n", file_path);
+// 	if (!texture.img) {
+//         printf("Error al cargar la textura desde %s\n", file_path);
 
-	}
-	return texture;
-}
+// 	}
+// 	return texture;
+// }
 
 //dibujar la matriz en el mapa
 void draw_map_matriz(void *mlx, void *win, char **map)
@@ -116,52 +95,63 @@ void draw_map_matriz(void *mlx, void *win, char **map)
 	}
 }
 
+void	load_texture(t_game *game, char *file_path)
+{
+	printf("pointer wall h: %p\n", &game->wall.height);
+	printf("pointer wall w: %p\n", &game->wall.width);
+	game->wall.img = mlx_xpm_file_to_image(game->mlx, file_path, &game->wall.width, &game->wall.height);
+	printf("texture.img: %p\n", game->wall.img);
+}
 
+void ft_game_init(t_game *game)
+{
+	game->mlx = mlx_init();
+	printf("game->rows: %d\n", game->rows);
+	printf("game->cols: %d\n", game->cols);
+	game->win = mlx_new_window(game->mlx, (game->rows * 50), (game->cols * 50), "so_long");
+	mlx_loop(game->mlx);
+}
+
+//funcion para validar la extencion del argumento
 int main(int argc, char **argv) {
+	t_game	game;
 	int		fd;
-	void	*mlx;
-	void	*mlx_win;
-	char	**matriz;
-	char	*gnl;
+	//char	*gnl;
 	// Map *str;
-	t_vars	vars;
 	// Texture	wall_texture;
 	// Texture	user_texture;
 	// Texture	coin_texture;
 	// Texture	exit_texture;
 
-	if (argc < 2)
+	if (argc != 2)
 		return (0);
 	if (argv[0] != 0)
 	{
-		matriz = NULL;
-		mlx = mlx_init();
-		// Leer el mapa
 		fd = open(argv[1], O_RDONLY);
 		if (fd < 0)
+			exit(EXIT_FAILURE);
+		if (ft_validate_ext(argv[1], ".ber"))
 		{
-			printf("Error al abrir el archivo\n");
-			exit(1);
+			printf("Error: El archivo no tiene la extencion .ber\n");
+			exit(EXIT_FAILURE);
 		}
-		mlx_win = mlx_new_window(mlx, 7 * 50, 7 * 50, "so long");
-		gnl = get_next_line(fd);
-		while (gnl != NULL && gnl[0] != '\0')
-		{
-			printf("%s",gnl);
-			matriz = ft_split(gnl, '\n');
-			gnl = get_next_line(fd);
-		}
-		//imprimir la matriz
-		printf("imprimiendo la matriz\n");
-		for (int i = 0; i < 7; i++)
-		{
-			for (int j = 0; j < 7; j++)
-			{
-				printf("%c", matriz[i][j]);
-			}
-			printf("\n");
-		}
-		draw_map_matriz(mlx, mlx_win, matriz);
+
+		ft_make_map(&game, fd);
+		ft_charge_map(&game);
+		ft_game_init(&game);
+
+		// if (fd < 0)
+		// {
+		// 	printf("Error al abrir el archivo\n");
+		// 	exit(1);
+		// }
+		// gnl = get_next_line(fd);
+		// while (gnl != NULL && gnl[0] != '\0')
+		// {
+		// 	printf("%s", gnl);
+		// 	//matriz = ft_split(gnl, '\n');
+		// 	gnl = get_next_line(fd);
+		// }
 		// // crear una funcion para cargar el mapa
 		// // load_map(&str);
 		// wall_texture = load_texture(mlx, "texturas/bloque.xpm");
@@ -170,9 +160,8 @@ int main(int argc, char **argv) {
 		// exit_texture = load_texture(mlx, "texturas/salida.xpm");
 
 		// draw_map(mlx, mlx_win, &str, &wall_texture, &user_texture, &coin_texture, &exit_texture);
-		mlx_hook(mlx_win, 2, 1L<<0, move, &vars);
-		mlx_key_hook(mlx_win, move, &vars);
-		mlx_loop(mlx);
+		// mlx_hook(mlx_win, 2, 1L<<0, move, &vars);
+		// mlx_key_hook(mlx_win, move, &vars);
 	}
 	return 0;
 }
