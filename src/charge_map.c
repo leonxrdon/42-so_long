@@ -42,20 +42,58 @@ void	ft_make_map(t_game *game, int fd)
 	close(fd);
 }
 
+char *build_path(char *base_path, int frame_number)
+{
+    // Suponiendo que ft_strjoin concatena dos cadenas
+    char *frame_path;
+    char *full_path;
+
+	frame_path = ft_strjoin(base_path, ft_itoa(frame_number));
+	full_path = ft_strjoin(frame_path, ".xpm");
+    free(frame_path);
+    return full_path;
+}
+
 
 //Funcion para cargar el mapa en la estructura
 void	ft_load_player(t_game *game)
 {
-	printf("Funcion load player\n");
+	t_sprite	front;
+	t_sprite	left;
+	t_sprite	right;
+	t_sprite	up;
+	t_sprite	down;
+	char		*path;
 	int		i;
-	int		j;
-	int		block_size;
 
 	i = 0;
-	j = 0;
-	block_size = 50;
-	printf("game->rows: %d\n", game->rows);
-	printf("game->cols: %d\n", game->cols);
+	while (i < NUM_FRAMES)
+	{
+		path = build_path("player/g", i);
+		front = load_texture(game->mlx, path);
+		game->player.front[i] = front;
+		game->player.front[i].path = path;
+		printf("Path: %s\n", game->player.front[i].path);
+		free(path);
+		i++;
+	}
+	i = 0;
+	while (i < NUM_FRAMES)
+	{
+		path = build_path("player/g", i);
+		right = load_texture(game->mlx, path);
+		game->player.right[i] = right;
+		game->player.right[i].path = path;
+		free(path);
+		i++;
+	}
+	left = load_texture(game->mlx, "player/g0.xpm");
+	up = load_texture(game->mlx, "player/g1.xpm");
+	down = load_texture(game->mlx, "player/g2.xpm");
+	game->player.left = left;
+	game->player.up = up;
+	game->player.down = down;
+	game->player.frame = 0;
 }
 
 void	ft_charge_map(t_game *game, char *file_path)
@@ -73,12 +111,11 @@ void	ft_charge_map(t_game *game, char *file_path)
 	collectible = load_texture(game->mlx, "coin.xpm");
 	exit = load_texture(game->mlx, "salida.xpm");
 	floor = load_texture(game->mlx, "floor.xpm");
-	front = load_texture(game->mlx, "mario.xpm");
+	front = load_texture(game->mlx, "player/g1.xpm");
 	game->wall = wall;
 	game->collectible = collectible;
 	game->exit = exit;
 	game->floor = floor;
-	game->player.front = front;
 	fd = open(file_path, O_RDONLY);
 	gnl = get_next_line(fd);
 	i = 0;
@@ -90,8 +127,12 @@ void	ft_charge_map(t_game *game, char *file_path)
 	}
 	game->collectibles = 0;
 	game->player.moves = 0;
+	game->player.action = "front";
 	ft_load_player(game);
+
 	ft_draw_map(game);
+	ft_update_frames(&game->player);
+
 }
 
 void	ft_draw_map(t_game *game)
@@ -103,6 +144,7 @@ void	ft_draw_map(t_game *game)
 	block_size = 50;
 	i = 0;
 	printf("Movimientos: %d\n", game->player.moves);
+	ft_update_frames(&game->player);
 	while (i < game->rows)
 	{
 		j = 0;
@@ -111,12 +153,23 @@ void	ft_draw_map(t_game *game)
 			mlx_put_image_to_window(game->mlx, game->win, game->floor.img, j * block_size, i * block_size);
 			if (game->map[i][j] == '1')
 				mlx_put_image_to_window(game->mlx, game->win, game->wall.img, j * block_size, i * block_size);
-			if (game->map[i][j] == 'P')
-				mlx_put_image_to_window(game->mlx, game->win, game->player.front.img, j * block_size, i * block_size);
-			if (game->map[i][j] == 'C')
+			else if (game->map[i][j] == 'P')
+			{
+				game->player.x = j * block_size;
+				game->player.y = i * block_size;
+				mlx_put_image_to_window(game->mlx, game->win, game->player.front[game->player.frame].img, game->player.x, game->player.y);
+			}
+			else if (game->map[i][j] == 'C')
 				mlx_put_image_to_window(game->mlx, game->win, game->collectible.img, j * block_size, i * block_size);
-			if (game->map[i][j] == 'E')
+			else if (game->map[i][j] == 'E')
 				mlx_put_image_to_window(game->mlx, game->win, game->exit.img, j * block_size, i * block_size);
+			else if (game->map[i][j] == '0')
+				mlx_put_image_to_window(game->mlx, game->win, game->floor.img, j * block_size, i * block_size);
+			else
+			{
+				printf("Error: Mapa invalido\n");
+				exit(EXIT_FAILURE);
+			}
 			j++;
 		}
 		i++;
