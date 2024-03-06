@@ -95,25 +95,36 @@ void draw_map_matriz(void *mlx, void *win, char **map)
 	}
 }
 
-void	load_texture(t_game *game, char *file_path)
+t_sprite	load_texture(void *mlx, char *file_path)
 {
-	printf("pointer wall h: %p\n", &game->wall.height);
-	printf("pointer wall w: %p\n", &game->wall.width);
-	game->wall.img = mlx_xpm_file_to_image(game->mlx, file_path, &game->wall.width, &game->wall.height);
-	printf("texture.img: %p\n", game->wall.img);
+	t_sprite	texture;
+	char	*route;
+
+	route = ft_strjoin(XPM_ROUTE, file_path);
+	texture.height = 50;
+	texture.width = 50;
+	texture.path = route;
+	texture.img = mlx_xpm_file_to_image(mlx, route, &texture.width, &texture.height);
+	if (!texture.img)
+	{
+		printf("Error al cargar la textura desde %s\n", route);
+		exit(1);
+	}
+	return (texture);
 }
 
-void ft_game_init(t_game *game)
+void	ft_game_init(t_game *game, int fd, char *file_path)
 {
 	game->mlx = mlx_init();
-	printf("game->rows: %d\n", game->rows);
-	printf("game->cols: %d\n", game->cols);
-	game->win = mlx_new_window(game->mlx, (game->rows * 50), (game->cols * 50), "so_long");
+	ft_make_map(game, fd);
+	game->win = mlx_new_window(game->mlx, (game->cols * 50), (game->rows * 50), "so_long");
+	ft_charge_map(game, file_path);
+	mlx_key_hook(game->win, ft_move, game);
 	mlx_loop(game->mlx);
 }
 
 //funcion para validar la extencion del argumento
-int main(int argc, char **argv) {
+int	main(int argc, char **argv) {
 	t_game	game;
 	int		fd;
 	//char	*gnl;
@@ -122,7 +133,6 @@ int main(int argc, char **argv) {
 	// Texture	user_texture;
 	// Texture	coin_texture;
 	// Texture	exit_texture;
-
 	if (argc != 2)
 		return (0);
 	if (argv[0] != 0)
@@ -135,10 +145,8 @@ int main(int argc, char **argv) {
 			printf("Error: El archivo no tiene la extencion .ber\n");
 			exit(EXIT_FAILURE);
 		}
+		ft_game_init(&game, fd, argv[1]);
 
-		ft_make_map(&game, fd);
-		ft_charge_map(&game);
-		ft_game_init(&game);
 
 		// if (fd < 0)
 		// {
