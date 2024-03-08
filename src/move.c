@@ -10,10 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/so_long.h"
+#include "so_long.h"
 
 void	ft_player_move(t_game *game, int i, int j, int x, int y)
 {
+	int	pasos;
+
+	pasos = 0;
+	ft_update_frames(&game->player);
 	if (game->map[x][y] == '1')
 	{
 		printf("No se puede mover\n");
@@ -24,10 +28,12 @@ void	ft_player_move(t_game *game, int i, int j, int x, int y)
 		game->collectibles--;
 		game->map[x][y] = 'P';
 		game->map[i][j] = '0';
-		printf("Se ha recogido una moneda\n");
+		printf("Collectibles: %d\n", game->collectibles);
+		printf("Se ha recogido una Esfera\n");
 	}
 	else if (game->map[x][y] == 'E')
 	{
+		game->player.moves++;
 		if (game->collectibles <= 0)
 		{
 			printf("Se ha llegado a la salida\n");
@@ -39,7 +45,6 @@ void	ft_player_move(t_game *game, int i, int j, int x, int y)
 	else if (game->map[x][y] == '0')
 	{
 		game->player.moves++;
-		game->collectibles--;
 		game->map[x][y] = 'P';
 		game->map[i][j] = '0';
 	}
@@ -95,9 +100,11 @@ int	ft_move(int keycode, t_game *game)
 
 void	ft_animation(t_game *game)
 {
+	int	i;
+
+	i = 0;
 	if (ft_strncmp(game->player.action, "front", 5) == 0)
 	{
-		printf("Front\n");
 		mlx_put_image_to_window(game->mlx, game->win, game->player.front[game->player.frame].img, game->player.x, game->player.y);
 	}
 	else if (ft_strncmp(game->player.action, "right", 5) == 0)
@@ -106,14 +113,14 @@ void	ft_animation(t_game *game)
 	}
 	else if (ft_strncmp(game->player.action, "left", 4) == 0)
 	{
-		mlx_put_image_to_window(game->mlx, game->win, game->player.left.img, game->player.x, game->player.y);
+		mlx_put_image_to_window(game->mlx, game->win, game->player.left[game->player.frame].img, game->player.x, game->player.y);
 	}
 	else if (ft_strncmp(game->player.action, "up", 2) == 0)
 	{
-		mlx_put_image_to_window(game->mlx, game->win, game->player.up.img, game->player.x, game->player.y);
+		mlx_put_image_to_window(game->mlx, game->win, game->player.up[game->player.frame].img, game->player.x, game->player.y);
 	}
 	else if (ft_strncmp(game->player.action, "down", 4) == 0)
 	{
-		mlx_put_image_to_window(game->mlx, game->win, game->player.down.img, game->player.x, game->player.y);
+		mlx_put_image_to_window(game->mlx, game->win, game->player.down[game->player.frame].img, game->player.x, game->player.y);
 	}
 }

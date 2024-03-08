@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/so_long.h"
+#include "so_long.h"
 
 t_sprite	load_texture(void *mlx, char *file_path)
 {
@@ -32,11 +32,12 @@ t_sprite	load_texture(void *mlx, char *file_path)
 
 void	ft_game_init(t_game *game, int fd, char *file_path)
 {
-	game->mlx = mlx_init();
 	ft_make_map(game, fd);
-	game->win = mlx_new_window(game->mlx, (game->cols * 50), (game->rows * 50), "so_long");
 	ft_charge_map(game, file_path);
-
+	ft_validate_map(game);
+	game->mlx = mlx_init();
+	game->win = mlx_new_window(game->mlx, (game->cols * BK_SIZE), (game->rows * BK_SIZE), "so_long");
+	ft_charge_sprite(game, file_path);
 	mlx_key_hook(game->win, ft_move, game);
 	mlx_loop(game->mlx);
 }

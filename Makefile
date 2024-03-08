@@ -15,11 +15,11 @@ CC	= gcc
 CCFLAGS	= -Wextra -Werror -Wall
 
 NAME = so_long
-SRC = src/main.c src/move.c src/validate_map.c src/charge_map.c
+SRC = src/main.c src/move.c src/validate_map.c src/charge_map.c src/validate_conections.c
 
 OBJ = $(SRC:.c=.o)
 
-INCLUDE = libft/libft.h include/so_long.h
+INCLUDE = libft/libft.h src/so_long.h
 
 $(NAME): $(OBJ) $(INCLUDE)
 	$(MAKE) -C libft/

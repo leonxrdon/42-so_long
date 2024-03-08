@@ -18,9 +18,10 @@
 #include <fcntl.h>
 #include "../libft/libft.h"
 
-# define XPM_ROUTE		"./texturas/"
+# define XPM_ROUTE		"./xpm/"
 # define NUM_FRAMES		3
 # define FRAME_DELAY_US	100000
+# define BK_SIZE 50
 
 typedef struct {
 	char **map;
@@ -44,11 +45,11 @@ typedef struct s_player
 	int		moves;
 	char	*action;
 	int		frame;
-	t_sprite	front[NUM_FRAMES];
-	t_sprite	left;
+	t_sprite	front[NUM_FRAMES - 1];
+	t_sprite	left[NUM_FRAMES];
 	t_sprite	right[NUM_FRAMES];
-	t_sprite	up;
-	t_sprite	down;
+	t_sprite	up[NUM_FRAMES];
+	t_sprite	down[NUM_FRAMES];
 }	t_player;
 
 typedef struct s_game
@@ -71,7 +72,13 @@ int		ft_move(int keycode, t_game *game);
 void	ft_player_move(t_game *game, int i, int j, int x, int y);
 
 int		ft_validate_ext(char *file_path, char *ext);
+int		ft_validate_border(t_game *game);
+int		ft_validate_map(t_game *game);
+int		ft_browse_map(t_game *game, int row, int col);
+int		ft_check_browe(t_game *game);
+
 void	ft_charge_map(t_game *game, char *file_path);
+void	ft_charge_sprite(t_game *game, char *file_path);
 t_sprite	load_texture(void *mlx, char *file_path);
 void	ft_make_map(t_game *game, int fd);
 void	ft_draw_map(t_game *game);
