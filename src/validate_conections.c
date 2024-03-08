@@ -47,7 +47,6 @@ int	ft_browse_map(t_game *game, int row, int col)
         printf("\n");
     }
     printf("\n");
-	//return(0);
 	return (ft_browse_map(game, row + 1, col) ||	// Abajo
 			ft_browse_map(game, row - 1, col) ||	// Arriba
 			ft_browse_map(game, row, col + 1) ||	// Derecha
