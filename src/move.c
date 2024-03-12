@@ -12,20 +12,15 @@
 
 #include "so_long.h"
 
-void	ft_player_move(t_game *game, int i, int j, int x, int y)
+void	ft_player_move(t_game *game, int x, int y)
 {
 	ft_update_frames(&game->player);
-	if (game->map[x][y] == '1')
-	{
-		printf("No se puede mover\n");
-	}
-	else if (game->map[x][y] == 'C')
+	if (game->map[x][y] == 'C')
 	{
 		game->player.moves++;
 		game->collectibles--;
 		game->map[x][y] = 'P';
-		game->map[i][j] = '0';
-		printf("Se ha recogido una Esfera\n");
+		game->map[game->player.y / BK_SIZE][game->player.x / BK_SIZE] = '0';
 		if (game->collectibles == 0)
 			game->map[game->exit_y][game->exit_x] = 'E';
 	}
@@ -33,9 +28,7 @@ void	ft_player_move(t_game *game, int i, int j, int x, int y)
 	{
 		if (game->collectibles == 0)
 		{
-
 			game->player.moves++;
-			printf("Se ha llegado a la salida\n");
 			ft_free_map(game->map, game->rows);
 			ft_close_esc(game);
 		}
@@ -43,14 +36,14 @@ void	ft_player_move(t_game *game, int i, int j, int x, int y)
 		{
 			game->player.moves++;
 			game->map[x][y] = 'P';
-			game->map[i][j] = '0';
+			game->map[game->player.y / BK_SIZE][game->player.x / BK_SIZE] = '0';
 		}
 	}
 	else if (game->map[x][y] == '0')
 	{
 		game->player.moves++;
 		game->map[x][y] = 'P';
-		game->map[i][j] = '0';
+		game->map[game->player.y / BK_SIZE][game->player.x / BK_SIZE] = '0';
 	}
 	ft_draw_map(game);
 }
@@ -76,22 +69,22 @@ int	ft_move(int key, t_game *game)
 				else if (key == KEY_A || key == KEY_LEFT)
 				{
 					game->player.action = "left";
-					ft_player_move(game, i, j, i, j - 1);
+					ft_player_move(game, i, j - 1);
 				}
 				else if (key == KEY_D || key == KEY_RIGHT)
 				{
 					game->player.action = "right";
-					ft_player_move(game, i, j, i, j + 1);
+					ft_player_move(game, i, j + 1);
 				}
 				else if (key == KEY_S || key == KEY_DOWN)
 				{
 					game->player.action = "down";
-					ft_player_move(game, i, j, i + 1, j);
+					ft_player_move(game, i + 1, j);
 				}
 				else if (key == KEY_W || key == KEY_UP)
 				{
 					game->player.action = "up";
-					ft_player_move(game, i, j, i - 1, j);
+					ft_player_move(game, i - 1, j);
 				}
 				return (0);
 			}
@@ -112,19 +105,19 @@ void	ft_animation(t_game *game)
 			game->player.front[game->player.frame].img,
 			game->player.x, game->player.y);
 	else if (ft_strncmp(game->player.action, "right", 5) == 0)
-	{
-		mlx_put_image_to_window(game->mlx, game->win, game->player.right[game->player.frame].img, game->player.x, game->player.y);
-	}
+		mlx_put_image_to_window(game->mlx, game->win,
+			game->player.right[game->player.frame].img,
+			game->player.x, game->player.y);
 	else if (ft_strncmp(game->player.action, "left", 4) == 0)
-	{
-		mlx_put_image_to_window(game->mlx, game->win, game->player.left[game->player.frame].img, game->player.x, game->player.y);
-	}
+		mlx_put_image_to_window(game->mlx, game->win,
+			game->player.left[game->player.frame].img,
+			game->player.x, game->player.y);
 	else if (ft_strncmp(game->player.action, "up", 2) == 0)
-	{
-		mlx_put_image_to_window(game->mlx, game->win, game->player.up[game->player.frame].img, game->player.x, game->player.y);
-	}
+		mlx_put_image_to_window(game->mlx, game->win,
+			game->player.up[game->player.frame].img,
+			game->player.x, game->player.y);
 	else if (ft_strncmp(game->player.action, "down", 4) == 0)
-	{
-		mlx_put_image_to_window(game->mlx, game->win, game->player.down[game->player.frame].img, game->player.x, game->player.y);
-	}
+		mlx_put_image_to_window(game->mlx, game->win,
+			game->player.down[game->player.frame].img,
+			game->player.x, game->player.y);
 }

@@ -72,7 +72,6 @@ void	ft_charge_sprite(t_game *game, char	*file_path)
 	game->player.action = "front";
 	ft_load_extras(game);
 	ft_load_player(game);
-	//ft_charge_extra(game);
 	ft_draw_map(game);
 }
 

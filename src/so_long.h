@@ -76,7 +76,7 @@ typedef struct s_game
 }	t_game;
 
 int			ft_move(int keycode, t_game *game);
-void		ft_player_move(t_game *game, int i, int j, int x, int y);
+void		ft_player_move(t_game *game, int x, int y);
 
 void		ft_errors(bool if_error, char *str);
 
