@@ -14,9 +14,6 @@
 
 void	ft_player_move(t_game *game, int i, int j, int x, int y)
 {
-	int	pasos;
-
-	pasos = 0;
 	ft_update_frames(&game->player);
 	if (game->map[x][y] == '1')
 	{
@@ -28,19 +25,26 @@ void	ft_player_move(t_game *game, int i, int j, int x, int y)
 		game->collectibles--;
 		game->map[x][y] = 'P';
 		game->map[i][j] = '0';
-		printf("Collectibles: %d\n", game->collectibles);
 		printf("Se ha recogido una Esfera\n");
+		if (game->collectibles == 0)
+			game->map[game->exit_y][game->exit_x] = 'E';
 	}
 	else if (game->map[x][y] == 'E')
 	{
-		game->player.moves++;
-		if (game->collectibles <= 0)
+		if (game->collectibles == 0)
 		{
+
+			game->player.moves++;
 			printf("Se ha llegado a la salida\n");
-			exit(0);
+			ft_free_map(game->map, game->rows);
+			ft_close_esc(game);
 		}
 		else
-			printf("No se puede salir\n");
+		{
+			game->player.moves++;
+			game->map[x][y] = 'P';
+			game->map[i][j] = '0';
+		}
 	}
 	else if (game->map[x][y] == '0')
 	{
@@ -51,7 +55,7 @@ void	ft_player_move(t_game *game, int i, int j, int x, int y)
 	ft_draw_map(game);
 }
 
-int	ft_move(int keycode, t_game *game)
+int	ft_move(int key, t_game *game)
 {
 	int	i;
 	int	j;
@@ -64,27 +68,28 @@ int	ft_move(int keycode, t_game *game)
 		{
 			if (game->map[i][j] == 'P')
 			{
-				if (keycode == 123 || keycode == 0)
+				if (key == KEY_ESC)
 				{
-					printf("Izquierda\n");
+					printf("Salir\n");
+					ft_close_esc(game);
+				}
+				else if (key == KEY_A || key == KEY_LEFT)
+				{
 					game->player.action = "left";
 					ft_player_move(game, i, j, i, j - 1);
 				}
-				else if (keycode == 124 || keycode == 2)
+				else if (key == KEY_D || key == KEY_RIGHT)
 				{
-					printf("Derecha\n");
 					game->player.action = "right";
 					ft_player_move(game, i, j, i, j + 1);
 				}
-				else if (keycode == 125 || keycode == 1)
+				else if (key == KEY_S || key == KEY_DOWN)
 				{
-					printf("Abajo\n");
 					game->player.action = "down";
 					ft_player_move(game, i, j, i + 1, j);
 				}
-				else if (keycode == 126 || keycode == 13)
+				else if (key == KEY_W || key == KEY_UP)
 				{
-					printf("Arriba\n");
 					game->player.action = "up";
 					ft_player_move(game, i, j, i - 1, j);
 				}
@@ -97,16 +102,15 @@ int	ft_move(int keycode, t_game *game)
 	return (0);
 }
 
-
 void	ft_animation(t_game *game)
 {
 	int	i;
 
 	i = 0;
 	if (ft_strncmp(game->player.action, "front", 5) == 0)
-	{
-		mlx_put_image_to_window(game->mlx, game->win, game->player.front[game->player.frame].img, game->player.x, game->player.y);
-	}
+		mlx_put_image_to_window(game->mlx, game->win,
+			game->player.front[game->player.frame].img,
+			game->player.x, game->player.y);
 	else if (ft_strncmp(game->player.action, "right", 5) == 0)
 	{
 		mlx_put_image_to_window(game->mlx, game->win, game->player.right[game->player.frame].img, game->player.x, game->player.y);

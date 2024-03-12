@@ -12,17 +12,20 @@
 
 #include "so_long.h"
 
-int	ft_validate_ext(char *file_path, char *ext)
+void	ft_validate_ext(char *file_path, char *ext)
 {
 	char	*str;
 	size_t	i;
 
 	i = 0;
 	str = ft_strrchr(file_path, '.');
-	return (ft_strncmp(str, ext, ft_strlen(str)));
+	ft_errors((str == NULL || (ft_strlen(str) != ft_strlen(ext))),
+		"Error:\nEl Archivo no tiene extencion .ber");
+	ft_errors((ft_strncmp(str, ext, ft_strlen(str))),
+		"Error:\nEl Archivo no tiene extencion .ber");
 }
 
-int	ft_validate_border(t_game *game)
+void	ft_validate_border(t_game *game)
 {
 	int	i;
 	int	j;
@@ -35,41 +38,51 @@ int	ft_validate_border(t_game *game)
 		{
 			if (i == 0 || i == game->rows - 1)
 			{
-				if (game->map[i][j] != '1')
-				{
-					printf("Error en el borde\n");
-					exit(EXIT_FAILURE);
-				}
+				ft_errors((game->map[i][j] != '1'),
+					"Error:\nEl mapa no tiene borde");
 			}
 			if (j == 0 || j == game->cols - 1)
 			{
-				if (game->map[i][j] != '1')
-				{
-					printf("Error en el borde\n");
-					exit(EXIT_FAILURE);
-				}
+				ft_errors((game->map[i][j] != '1'),
+					"Error:\nEl mapa no tiene borde");
 			}
 			j++;
 		}
 		i++;
 	}
-	return (1);
 }
 
-
-int	ft_validate_map(t_game *game)
+void	ft_validate_rectangle(t_game *game)
 {
 	int	i;
 	int	j;
-	int	cout_player;
-	int	cout_exit;
-	int	cout_collectible;
 
 	i = 0;
-	cout_player = 0;
-	cout_exit = 0;
-	cout_collectible = 0;
-	ft_validate_border(game);
+	while (i < game->rows)
+	{
+		j = 0;
+		while (j < game->cols)
+		{
+			if (game->cols != (int)ft_strlen(game->map[i]))
+				ft_errors(1, "Error:\nEl mapa no es un rectangulo");
+			j++;
+		}
+		i++;
+	}
+}
+
+void	ft_validate_objects(t_game *game)
+{
+	int	i;
+	int	j;
+	int	c_player;
+	int	c_exit;
+	int	c_collectible;
+
+	i = 0;
+	c_player = 0;
+	c_exit = 0;
+	c_collectible = 0;
 	while (i < game->rows)
 	{
 		j = 0;
@@ -77,27 +90,41 @@ int	ft_validate_map(t_game *game)
 		{
 			if (game->map[i][j] == 'P')
 			{
-				game->player.x = i;
-				game->player.y = j;
-				cout_player++;
+				game->player.x = j;
+				game->player.y = i;
+				c_player++;
 			}
-			if (game->map[i][j] == 'E')
-				cout_exit++;
-			if (game->map[i][j] == 'C')
-				cout_collectible++;
+			else if (game->map[i][j] == 'E')
+			{
+				game->exit_x = j;
+				game->exit_y = i;
+				c_exit++;
+			}
+			else if (game->map[i][j] == 'C')
+				c_collectible++;
+			else if (game->map[i][j] == '0' || game->map[i][j] == '1')
+				;
+			else
+				ft_errors(1, "Error:\nEl mapa tiene objetos invalidos");
 			j++;
 		}
 		i++;
 	}
-	ft_browse_map(game, game->player.x, game->player.y);
-	ft_check_browe(game);
-	printf("Player: %d, Exit: %d, Collectibles: %d\n", cout_player, cout_exit, cout_collectible);
-	if (cout_player != 1 || cout_exit != 1 || cout_collectible < 1)
-	{
-		printf("Error en el mapa\n");
-		exit(1);
-	}
-	game->collectibles = cout_collectible;
-	printf("Collectibles: %d\n", game->collectibles);
+	ft_errors((c_player != 1), "Error:\nEl mapa no tiene el numero de jugadores correcto");
+	ft_errors((c_exit != 1), "Error:\nEl mapa no tiene una salida válida");
+	ft_errors((c_collectible == 0), "Error:\nEl mapa no tiene coleccionables");
+	game->collectibles = c_collectible;
+}
+
+int	ft_validate_map(t_game *game)
+{
+	char	**matriz_aux;
+
+	ft_validate_rectangle(game);
+	ft_validate_border(game);
+	ft_validate_objects(game);
+	matriz_aux = ft_matriz_aux(game);
+	ft_browse_map(game, matriz_aux, game->player.x, game->player.y);
+	ft_check_browse(game, matriz_aux);
 	return (0);
 }

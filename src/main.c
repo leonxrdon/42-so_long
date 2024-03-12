@@ -12,59 +12,49 @@
 
 #include "so_long.h"
 
-t_sprite	load_texture(void *mlx, char *file_path)
+void	ft_leaks(void)
 {
-	t_sprite	texture;
-	char	*route;
-
-	route = ft_strjoin(XPM_ROUTE, file_path);
-	texture.height = 50;
-	texture.width = 50;
-	texture.path = route;
-	texture.img = mlx_xpm_file_to_image(mlx, route, &texture.width, &texture.height);
-	if (!texture.img)
-	{
-		printf("Error al cargar la textura desde %s\n", route);
-		exit(1);
-	}
-	return (texture);
+	printf("Leaks\n");
+	system("leaks so_long");
 }
 
-void	ft_game_init(t_game *game, int fd, char *file_path)
+void	ft_game_init(t_game *game, char *file_path)
 {
-	ft_make_map(game, fd);
-	ft_charge_map(game, file_path);
-	ft_validate_map(game);
 	game->mlx = mlx_init();
-	game->win = mlx_new_window(game->mlx, (game->cols * BK_SIZE), (game->rows * BK_SIZE), "so_long");
+	game->win = mlx_new_window(game->mlx,
+			(game->cols * BK_SIZE),
+			(game->rows * BK_SIZE),
+			"so_long");
 	ft_charge_sprite(game, file_path);
+	mlx_hook(game->win, 17, 0L, ft_close_esc, &game);
 	mlx_key_hook(game->win, ft_move, game);
+	system("leaks so_long");
 	mlx_loop(game->mlx);
 }
 
 void	ft_update_frames(t_player *player)
 {
 	player->frame = (player->frame + 1) % NUM_FRAMES;
-	printf("frame: %d\n", player->frame);
 }
-//funcion para validar la extencion del argumento
-int	main(int argc, char **argv) {
+
+int	main(int argc, char **argv)
+{
 	t_game	game;
 	int		fd;
 
-	if (argc != 2)
-		return (0);
+	ft_errors((argc != 2), "Error\n");
 	if (argv[0] != 0)
 	{
 		fd = open(argv[1], O_RDONLY);
-		if (fd < 0)
-			exit(EXIT_FAILURE);
-		if (ft_validate_ext(argv[1], ".ber"))
-		{
-			printf("Error: El archivo no tiene la extencion .ber\n");
-			exit(EXIT_FAILURE);
-		}
-		ft_game_init(&game, fd, argv[1]);
+		ft_errors((fd < 0), "Error:\n");
+		ft_validate_ext(argv[1], ".ber");
+		ft_make_map(&game, fd);
+		ft_charge_map(&game, argv[1]);
+		ft_errors((ft_validate_map(&game)),
+			"Error:\nEl mapa no es valido");
+		ft_game_init(&game, argv[1]);
+		close(fd);
 	}
-	return 0;
+	system("leaks so_long");
+	return (0);
 }

@@ -12,10 +12,17 @@
 
 RM	= rm -f
 CC	= gcc
-CCFLAGS	= -Wextra -Werror -Wall
+CCFLAGS	= -Wextra -Werror -Wall -g3
 
-NAME = so_long
-SRC = src/main.c src/move.c src/validate_map.c src/charge_map.c src/validate_conections.c
+NAME =	so_long
+SRC =	src/main.c \
+		src/move.c \
+		src/validate_map.c \
+		src/charge_map.c \
+		src/validate_conections.c \
+		src/load_player.c \
+		src/charge_sprite.c \
+		src/errors.c \
 
 OBJ = $(SRC:.c=.o)
 

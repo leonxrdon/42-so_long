@@ -12,50 +12,43 @@
 
 #include "so_long.h"
 
-int	ft_browse_map(t_game *game, int row, int col)
+int	ft_browse_map(t_game *game, char **matriz_aux, int row, int col)
 {
 	if (row < 0 || row >= game->rows)
-	{
-		printf("Error en las conexiones\n");
-		exit(EXIT_FAILURE);
-	}
+		ft_errors(1, "Error:\nEl mapa es invalido");
 	if (col < 0 || col >= game->cols)
+		ft_errors(1, "Error:\nEl mapa es invalido");
+	if (matriz_aux[row][col] == '1' || matriz_aux[row][col] == 'V')
 	{
-		printf("Error en las conexiones\n");
-		exit(EXIT_FAILURE);
-	}
-	if (game->map[row][col] == '1' || game->map[row][col] == 'V')
-	{
-		//printf("Encountered wall\n");
 		return (0);
 	}
-	if (game->map[row][col] == '0')
+	if (matriz_aux[row][col] == '0')
 	{
-		printf("Encountered floor\n");
-		game->map[row][col] = 'V';
-		//return (0);
+		matriz_aux[row][col] = 'V';
 	}
-	if (game->map[row][col] == 'C' || game->map[row][col] == 'E')
+	if (matriz_aux[row][col] == 'C' || matriz_aux[row][col] == 'E')
+		matriz_aux[row][col] = 'V';
+	int i = 0;
+	int j = 0;
+	while (i < game->rows)
 	{
-		printf("Encountered collectible or exit\n");
-		game->map[row][col] = 'V';
+		j = 0;
+		while (j < game->cols)
+		{
+			printf("%c", matriz_aux[i][j]);
+			j++;
+		}
+		printf("\n");
+		i++;
 	}
-	for (int i = 0; i < game->rows; ++i) {
-        for (int j = 0; j < game->cols; ++j) {
-            printf("%c ", game->map[i][j]);
-        }
-        printf("\n");
-    }
-    printf("\n");
-	return (ft_browse_map(game, row + 1, col) ||	// Abajo
-			ft_browse_map(game, row - 1, col) ||	// Arriba
-			ft_browse_map(game, row, col + 1) ||	// Derecha
-			ft_browse_map(game, row, col - 1));	// Izquierda
+	return (ft_browse_map(game, matriz_aux, row + 1, col)
+		||	ft_browse_map(game, matriz_aux, row - 1, col)
+		||	ft_browse_map(game, matriz_aux, row, col + 1)
+		||	ft_browse_map(game, matriz_aux, row, col - 1));
 }
 
-int	ft_check_browe(t_game *game)
+void	ft_check_browse(t_game *game, char **matriz_aux)
 {
-	printf("Checking browse\n");
 	int	i;
 	int	j;
 
@@ -65,14 +58,11 @@ int	ft_check_browe(t_game *game)
 		j = 0;
 		while (j < game->cols)
 		{
-			if (game->map[i][j] == 'C' || game->map[i][j] == 'E')
-			{
-				printf("Las esferas o la salida esta obstruida\n");
-				exit(EXIT_FAILURE);
-			}
+			if (matriz_aux[i][j] == '0')
+				ft_errors(1, "Error:\nEl mapa no puede ser terminado");
 			j++;
 		}
 		i++;
 	}
-	return (1);
 }
+
