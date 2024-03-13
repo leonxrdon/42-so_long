@@ -21,8 +21,6 @@
 # include "../libft/libft.h"
 
 # define XPM_ROUTE		"./xpm/"
-# define NUM_FRAMES		3
-# define FRAME_DELAY_US	100000
 # define BK_SIZE		50
 
 # define KEY_ESC	53
@@ -48,14 +46,7 @@ typedef struct s_player
 	int			x;
 	int			y;
 	int			moves;
-	char		*action;
-	int			frame;
 	t_sprite	sprite;
-	t_sprite	front[NUM_FRAMES];
-	t_sprite	left[NUM_FRAMES];
-	t_sprite	right[NUM_FRAMES];
-	t_sprite	up[NUM_FRAMES];
-	t_sprite	down[NUM_FRAMES];
 }	t_player;
 
 typedef struct s_game
@@ -78,7 +69,7 @@ typedef struct s_game
 }	t_game;
 
 int			ft_move(int keycode, t_game *game);
-void		ft_player_move(t_game *game, int x, int y, char *action);
+void		ft_player_move(t_game *game, int x, int y);
 
 void		ft_errors(bool if_error, char *str);
 
@@ -96,6 +87,7 @@ int			ft_validate_map(t_game *game);
 
 int			ft_close_esc(t_game *game);
 void		ft_free_map(char **map, int rows);
+void		ft_free_matriz(t_game *game);
 void		ft_free_img(t_game *game);
 
 void		ft_charge_map(t_game *game, char *file_path);
@@ -108,8 +100,6 @@ t_sprite	ft_load_texture(void *mlx, char *file_path);
 void		ft_load_extras(t_game *game);
 void		ft_load_player(t_game *game);
 void		ft_animation(t_game *game);
-void		ft_update_frames(t_player *player);
-char		*ft_build_path(char *base_path, int frame_number);
 
 void		ft_end_game(t_game *game);
 

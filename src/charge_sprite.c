@@ -40,12 +40,12 @@ void	ft_load_player(t_game *game)
 	game->player.x = 0;
 	game->player.y = 0;
 	game->player.moves = 0;
-	game->player.frame = 0;
 }
 
 void	ft_charge_sprite(t_game *game, char	*file_path)
 {
 	char		*gnl;
+	char		**str;
 	int			i;
 	int			fd;
 
@@ -55,12 +55,13 @@ void	ft_charge_sprite(t_game *game, char	*file_path)
 	i = 0;
 	while (gnl != NULL && gnl[0] != '\0' && i < game->rows)
 	{
-		game->map[i] = *ft_split(gnl, '\n');
+		str = ft_split(gnl, '\n');
+		game->map[i] = *str;
 		free(gnl);
 		gnl = get_next_line(fd);
+		free(str);
 		i++;
 	}
-	game->player.action = "front";
 	ft_load_extras(game);
 	ft_load_player(game);
 	ft_draw_map(game);

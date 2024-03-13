@@ -39,20 +39,10 @@ void	ft_make_map(t_game *game, int fd)
 	close(fd);
 }
 
-char	*ft_build_path(char *base_path, int frame_number)
-{
-	char	*frame_path;
-	char	*full_path;
-
-	frame_path = ft_strjoin(base_path, ft_itoa(frame_number));
-	full_path = ft_strjoin(frame_path, ".xpm");
-	free(frame_path);
-	return (full_path);
-}
-
 void	ft_charge_map(t_game *game, char *file_path)
 {
 	char		*gnl;
+	char		**str;
 	int			i;
 	int			fd;
 
@@ -62,9 +52,11 @@ void	ft_charge_map(t_game *game, char *file_path)
 	i = 0;
 	while (gnl != NULL && gnl[0] != '\0' && i < game->rows)
 	{
-		game->matriz_aux[i] = *ft_split(gnl, '\n');
+		str = ft_split(gnl, '\n');
+		game->matriz_aux[i] = *str;
 		free(gnl);
 		gnl = get_next_line(fd);
+		free(str);
 		i++;
 	}
 	close(fd);

@@ -12,11 +12,8 @@
 
 #include "so_long.h"
 
-void	ft_player_move(t_game *game, int x, int y, char *action)
+void	ft_player_move(t_game *game, int x, int y)
 {
-	ft_update_frames(&game->player);
-	game->player.action = action;
-	printf("x: %d, y: %d\n", x, y);
 	if (game->map[x][y] == 'C')
 	{
 		game->collectibles--;
@@ -50,13 +47,13 @@ int	ft_move(int key, t_game *game)
 	if (key == KEY_ESC)
 		ft_end_game(game);
 	else if (key == KEY_A || key == KEY_LEFT)
-		ft_player_move(game, x, y - 1, "front");
+		ft_player_move(game, x, y - 1);
 	else if (key == KEY_D || key == KEY_RIGHT)
-		ft_player_move(game, x, y + 1, "front");
+		ft_player_move(game, x, y + 1);
 	else if (key == KEY_S || key == KEY_DOWN)
-		ft_player_move(game, x + 1, y, "front");
+		ft_player_move(game, x + 1, y);
 	else if (key == KEY_W || key == KEY_UP)
-		ft_player_move(game, x - 1, y, "front");
+		ft_player_move(game, x - 1, y);
 	return (0);
 }
 
@@ -66,24 +63,7 @@ void	ft_animation(t_game *game)
 
 	i = 0;
 	printf("Movimientos: %d\n", game->player.moves);
-	if (ft_strncmp(game->player.action, "front", 5) == 0)
-		mlx_put_image_to_window(game->mlx, game->win,
-			game->player.sprite.img,
-			game->player.x, game->player.y);
-	else if (ft_strncmp(game->player.action, "right", 5) == 0)
-		mlx_put_image_to_window(game->mlx, game->win,
-			game->player.right[game->player.frame].img,
-			game->player.x, game->player.y);
-	else if (ft_strncmp(game->player.action, "left", 4) == 0)
-		mlx_put_image_to_window(game->mlx, game->win,
-			game->player.left[game->player.frame].img,
-			game->player.x, game->player.y);
-	else if (ft_strncmp(game->player.action, "up", 2) == 0)
-		mlx_put_image_to_window(game->mlx, game->win,
-			game->player.up[game->player.frame].img,
-			game->player.x, game->player.y);
-	else if (ft_strncmp(game->player.action, "down", 4) == 0)
-		mlx_put_image_to_window(game->mlx, game->win,
-			game->player.down[game->player.frame].img,
-			game->player.x, game->player.y);
+	mlx_put_image_to_window(game->mlx, game->win,
+		game->player.sprite.img,
+		game->player.x, game->player.y);
 }

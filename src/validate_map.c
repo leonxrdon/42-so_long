@@ -62,7 +62,10 @@ void	ft_validate_rectangle(t_game *game, char **matriz_aux)
 		while (j < game->cols)
 		{
 			if (game->cols != (int)ft_strlen(matriz_aux[i]))
+			{
+				//ft_free_map(game->matriz_aux, game->rows);
 				ft_errors(1, "Error:\nEl mapa no es un rectangulo");
+			}
 			if (game->cols < 3 || game->rows < 3)
 				ft_errors(1, "Error:\nEl mapa es muy pequeño");
 			j++;

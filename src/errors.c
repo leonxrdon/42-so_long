@@ -14,6 +14,7 @@
 
 int	ft_close_esc(t_game *game)
 {
+	ft_free_map(game->map, game->rows);
 	ft_free_img(game);
 	mlx_destroy_window(game->mlx, game->win);
 	exit(0);
@@ -27,6 +28,15 @@ void	ft_free_img(t_game *game)
 	mlx_destroy_image(game->mlx, game->floor.img);
 }
 
+void	ft_errors(bool if_error, char *str)
+{
+	if (if_error)
+	{
+		perror(str);
+		exit(EXIT_FAILURE);
+	}
+}
+
 void	ft_free_map(char **map, int rows)
 {
 	int	i;
@@ -35,16 +45,22 @@ void	ft_free_map(char **map, int rows)
 	while (i < rows)
 	{
 		free(map[i]);
+		map[i] = NULL;
 		i++;
 	}
 	free(map);
+	map = NULL;
 }
 
-void	ft_errors(bool if_error, char *str)
+void	ft_free_matriz(t_game *game)
 {
-	if (if_error)
+	int	i;
+
+	i = 0;
+	while (i < game->rows)
 	{
-		perror(str);
-		exit(EXIT_FAILURE);
+		free(game->matriz_aux[i]);
+		i++;
 	}
+	free(game->matriz_aux);
 }

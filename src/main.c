@@ -31,11 +31,6 @@ void	ft_game_init(t_game *game, char *file_path)
 	mlx_loop(game->mlx);
 }
 
-void	ft_update_frames(t_player *player)
-{
-	player->frame = (player->frame + 1) % NUM_FRAMES;
-}
-
 void	ft_end_game(t_game *game)
 {
 	printf("Movimientos: %d\n", game->player.moves);
