@@ -50,13 +50,13 @@ int	ft_move(int key, t_game *game)
 	if (key == KEY_ESC)
 		ft_end_game(game);
 	else if (key == KEY_A || key == KEY_LEFT)
-		ft_player_move(game, x, y - 1, "front");
+		ft_player_move(game, x, y - 1, "left");
 	else if (key == KEY_D || key == KEY_RIGHT)
-		ft_player_move(game, x, y + 1, "front");
+		ft_player_move(game, x, y + 1, "right");
 	else if (key == KEY_S || key == KEY_DOWN)
-		ft_player_move(game, x + 1, y, "front");
+		ft_player_move(game, x + 1, y, "down");
 	else if (key == KEY_W || key == KEY_UP)
-		ft_player_move(game, x - 1, y, "front");
+		ft_player_move(game, x - 1, y, "up");
 	return (0);
 }
 
@@ -68,7 +68,7 @@ void	ft_animation(t_game *game)
 	printf("Movimientos: %d\n", game->player.moves);
 	if (ft_strncmp(game->player.action, "front", 5) == 0)
 		mlx_put_image_to_window(game->mlx, game->win,
-			game->player.sprite.img,
+			game->player.front[game->player.frame].img,
 			game->player.x, game->player.y);
 	else if (ft_strncmp(game->player.action, "right", 5) == 0)
 		mlx_put_image_to_window(game->mlx, game->win,

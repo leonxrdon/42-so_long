@@ -50,7 +50,6 @@ typedef struct s_player
 	int			moves;
 	char		*action;
 	int			frame;
-	t_sprite	sprite;
 	t_sprite	front[NUM_FRAMES];
 	t_sprite	left[NUM_FRAMES];
 	t_sprite	right[NUM_FRAMES];
@@ -70,7 +69,7 @@ typedef struct s_game
 	int			collectibles;
 	int			exit_x;
 	int			exit_y;
-	t_sprite	wall;
+	t_sprite	wall[NUM_FRAMES];
 	t_player	player;
 	t_sprite	collectible;
 	t_sprite	exit;
@@ -99,14 +98,17 @@ void		ft_free_map(char **map, int rows);
 void		ft_free_img(t_game *game);
 
 void		ft_charge_map(t_game *game, char *file_path);
-void		ft_charge_wall(t_game *game, int i, int j);
 void		ft_charge_sprite(t_game *game, char *file_path);
 void		ft_make_map(t_game *game, int fd);
 void		ft_draw_map(t_game *game);
 void		ft_game_init(t_game *game, char *file_path);
 t_sprite	ft_load_texture(void *mlx, char *file_path);
+
 void		ft_load_extras(t_game *game);
 void		ft_load_player(t_game *game);
+void		ft_load_front(t_game *game);
+void		ft_load_left(t_game *game);
+void		ft_load_right(t_game *game);
 void		ft_animation(t_game *game);
 void		ft_update_frames(t_player *player);
 char		*ft_build_path(char *base_path, int frame_number);

@@ -12,7 +12,7 @@
 
 #include "so_long.h"
 
-int	ft_browse_map(t_game *game, char **matriz_aux, int col, int row)
+int	ft_browse_map(t_game *game, char **matriz_aux, int row, int col)
 {
 	if (row < 0 || row >= game->rows)
 		ft_errors(1, "Error:\nEl mapa es invalido");
@@ -28,10 +28,10 @@ int	ft_browse_map(t_game *game, char **matriz_aux, int col, int row)
 	}
 	if (matriz_aux[row][col] == 'C' || matriz_aux[row][col] == 'E')
 		matriz_aux[row][col] = 'V';
-	return (ft_browse_map(game, matriz_aux, col, row + 1)
-		|| ft_browse_map(game, matriz_aux, col, row - 1)
-		|| ft_browse_map(game, matriz_aux, col - 1, row)
-		|| ft_browse_map(game, matriz_aux, col, row + 1));
+	return (ft_browse_map(game, matriz_aux, row + 1, col)
+		|| ft_browse_map(game, matriz_aux, row - 1, col)
+		|| ft_browse_map(game, matriz_aux, row, col + 1)
+		|| ft_browse_map(game, matriz_aux, row, col - 1));
 }
 
 void	ft_check_browse(t_game *game, char **matriz_aux)

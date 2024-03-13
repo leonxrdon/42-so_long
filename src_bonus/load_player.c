@@ -16,7 +16,7 @@ void	ft_load_front(t_game *game)
 {
 	t_sprite	front;
 	char		*path;
-	int		i;
+	int			i;
 
 	i = 0;
 	while (i < NUM_FRAMES)
@@ -95,4 +95,3 @@ void	ft_load_player(t_game *game)
 	ft_load_right(game);
 	ft_load_up_down(game);
 }
-

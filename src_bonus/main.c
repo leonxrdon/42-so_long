@@ -17,6 +17,13 @@ void	ft_leaks(void)
 	printf("Leaks\n");
 	system("leaks so_long");
 }
+/*
+static int	ft_close(t_game *game)
+{
+
+	mlx_destroy_window(game->mlx, game->win);
+	return (0);
+} */
 
 void	ft_game_init(t_game *game, char *file_path)
 {
@@ -56,6 +63,7 @@ int	main(int argc, char **argv)
 		ft_errors((fd < 0), "Error:\n");
 		ft_validate_ext(argv[1], ".ber");
 		ft_make_map(&game, fd);
+		printf("Mapa cargado\n");
 		ft_charge_map(&game, argv[1]);
 		ft_errors((ft_validate_map(&game)),
 			"Error:\nEl mapa no es valido");

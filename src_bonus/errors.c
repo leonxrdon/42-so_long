@@ -21,7 +21,19 @@ int	ft_close_esc(t_game *game)
 
 void	ft_free_img(t_game *game)
 {
-	mlx_destroy_image(game->mlx, game->player.sprite.img);
+	int	i;
+
+	i = 0;
+	while (i < NUM_FRAMES)
+	{
+		mlx_destroy_image(game->mlx, game->player.front[i].img);
+		mlx_destroy_image(game->mlx, game->player.left[i].img);
+		mlx_destroy_image(game->mlx, game->player.right[i].img);
+		mlx_destroy_image(game->mlx, game->player.up[i].img);
+		mlx_destroy_image(game->mlx, game->player.down[i].img);
+		mlx_destroy_image(game->mlx, game->wall[i].img);
+		i++;
+	}
 	mlx_destroy_image(game->mlx, game->exit.img);
 	mlx_destroy_image(game->mlx, game->collectible.img);
 	mlx_destroy_image(game->mlx, game->floor.img);

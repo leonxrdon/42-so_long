@@ -18,19 +18,21 @@ NAME =	so_long
 SRC =	src/main.c \
 		src/move.c \
 		src/validate_map.c \
+		src/validate_object.c \
 		src/charge_map.c \
 		src/validate_conections.c \
-		src/load_player.c \
 		src/charge_sprite.c \
+		src/draw_map.c \
 		src/errors.c \
 
 OBJ = $(SRC:.c=.o)
 
 INCLUDE = libft/libft.h src/so_long.h
 
+
 $(NAME): $(OBJ) $(INCLUDE)
 	$(MAKE) -C libft/
-	$(CC) $(OBJ) -Lmlx -lmlx -framework OpenGL -framework AppKit libft/libft.a -o $(NAME)
+	$(CC) $(CCFLAGS) $(OBJ) -lmlx -framework OpenGL -framework AppKit libft/libft.a -o $(NAME)
 
 all: $(NAME)
 

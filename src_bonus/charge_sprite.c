@@ -28,19 +28,22 @@ t_sprite	ft_load_texture(void *mlx, char *file_path)
 
 void	ft_load_extras(t_game *game)
 {
-	game->wall = ft_load_texture(game->mlx, "wall_0.xpm");
+	int			i;
+	char		*path;
+	t_sprite	wall;
+
+	i = 0;
+	while (i < NUM_FRAMES)
+	{
+		path = ft_build_path("wall_", i);
+		wall = ft_load_texture(game->mlx, path);
+		game->wall[i] = wall;
+		free(path);
+		i++;
+	}
 	game->collectible = ft_load_texture(game->mlx, "ball_1.xpm");
 	game->exit = ft_load_texture(game->mlx, "exit.xpm");
 	game->floor = ft_load_texture(game->mlx, "floor.xpm");
-}
-
-void	ft_load_player(t_game *game)
-{
-	game->player.sprite = ft_load_texture(game->mlx, "g_up_2.xpm");
-	game->player.x = 0;
-	game->player.y = 0;
-	game->player.moves = 0;
-	game->player.frame = 0;
 }
 
 void	ft_charge_sprite(t_game *game, char	*file_path)
@@ -64,5 +67,17 @@ void	ft_charge_sprite(t_game *game, char	*file_path)
 	ft_load_extras(game);
 	ft_load_player(game);
 	ft_draw_map(game);
-	close(fd);
+}
+
+void	ft_charge_wall(t_game *game, int i, int j)
+{
+	int	random;
+
+	random = (i + j) % NUM_FRAMES;
+	if (random >= NUM_FRAMES)
+		random = 0;
+	mlx_put_image_to_window(game->mlx, game->win,
+		game->wall[random].img,
+		j * BK_SIZE,
+		i * BK_SIZE);
 }
